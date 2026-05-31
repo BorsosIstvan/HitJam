@@ -1,6 +1,6 @@
 const CACHE_NAME = 'php-app-cache-v1';
 const urlsToCache = [
-  '/',
+  '/HitJam',
   '/HitJam/index.php',
   '/HitJam/manifest.json'
 ];
