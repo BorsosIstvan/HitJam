@@ -37,9 +37,13 @@ if (isset($_POST['start_nieuwe_ronde'])) {
         $song_id = $song['id'];
         $huidige_tijd = microtime(true); // Tijd in milliseconden voor de snelheid-check
         
-        // Update de live status: dit activeert het speelveld voor alle spelers!
-        $stmt = $db->prepare("UPDATE game_status SET current_song_id = ?, round_active = 1, start_time = ? WHERE id = 1");
-        $stmt->execute([$song_id, $huidige_tijd]);
+        // Update de live status: We zetten music_started op 0! Pas bij de play-knop gaat de quiz los.
+		$stmt = $db->prepare("UPDATE game_status SET current_song_id = ?, round_active = 1, music_started = 0, start_time = 0 WHERE id = 1");
+		$stmt->execute([$song_id]);
+
+		// Reset ook direct de oude gekozen antwoorden van de spelers voor de nieuwe ronde!
+		$db->exec("UPDATE scores SET gekozen_jaar = 0");
+
         
         // Stuur de leider direct door naar de luisterpagina om de muziek te starten op de JBL!
         header("Location: luister.php?id=" . $song_id . "&battle=1");

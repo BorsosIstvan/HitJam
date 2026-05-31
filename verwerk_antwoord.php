@@ -24,21 +24,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $echt_jaar = (int)$stmt->fetchColumn();
         
         if ($gekozen_jaar === $echt_jaar) {
-            // 🎉 GOED ANTWOORD! Bereken score (Snelheid loont!)
-            // Basis 50 punten + maximaal 50 bonuspunten als je binnen 10 seconden drukt
             $bonus = max(0, (10 - $reactie_snelheid) * 5);
             $punten_erbij = round(50 + $bonus);
             
-            // Sla de score op in SQLite
-            $stmt = $db->prepare("INSERT INTO scores (username, points) VALUES (?, ?) 
-                                  ON CONFLICT(username) DO UPDATE SET points = points + ?");
-            $stmt->execute([$username, $punten_erbij, $punten_erbij]);
+            $stmt = $db->prepare("UPDATE scores SET points = points + ? WHERE username = ?");
+            $stmt->execute([$punten_erbij, $username]);
             
             echo json_encode(['status' => 'correct', 'points' => $punten_erbij]);
         } else {
-            // ❌ FOUT ANTWOORD
             echo json_encode(['status' => 'wrong', 'correct_year' => $echt_jaar]);
         }
     }
+}
+if (isset($_GET['sluit_ronde'])) {
+    $db->exec("UPDATE game_status SET round_active = 0, music_started = 0 WHERE id = 1");
 }
 ?>

@@ -73,7 +73,9 @@ if (!isset($_SESSION['loggedin'])) { header("Location: login.php"); exit; }
             fetch('check_status.php')
                 .then(response => response.json())
                 .then(data => {
-                    if (data.round_active == 1 && data.current_song_id !== momenteelRondeId) {
+                    // Oude regel: if (data.round_active == 1 ... )
+// 🔥 VERVANG DOOR:
+					if (data.round_active == 1 && data.music_started == 1 && data.current_song_id !== momenteelRondeId) {
                         // 🚀 RONDE START! Wissel van scherm
                         momenteelRondeId = data.current_song_id;
                         document.getElementById('waitingScreen').style.display = 'none';

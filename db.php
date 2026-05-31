@@ -23,6 +23,16 @@ try {
         theme TEXT NOT NULL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )");
+	
+	// 🔥 EXTRA KOLOMMEN CHECK: Zorg dat SQLite de gekozen antwoorden kan opslaan
+	try {
+		$db->exec("ALTER TABLE scores ADD COLUMN gekozen_jaar INTEGER DEFAULT 0");
+	} catch(Exception $e) { /* Kolom bestaat al, negeer de fout */ }
+
+	try {
+		$db->exec("ALTER TABLE game_status ADD COLUMN music_started INTEGER DEFAULT 0");
+	} catch(Exception $e) { /* Kolom bestaat al, negeer de fout */ }
+
 
     // Zorg ervoor dat er altijd minstens één admin/spelleider account bestaat
     $checkAdmin = $db->query("SELECT COUNT(*) FROM users WHERE role = 'admin'")->fetchColumn();
