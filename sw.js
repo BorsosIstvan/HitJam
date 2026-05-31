@@ -1,8 +1,8 @@
 const CACHE_NAME = 'php-app-cache-v1';
 const urlsToCache = [
   '/',
-  '/index.php',
-  '/manifest.json'
+  '/HitJam/index.php',
+  '/HitJam/manifest.json'
 ];
 
 // Installeer de service worker en sla basisbestanden op
