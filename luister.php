@@ -31,12 +31,14 @@ try {
 
 $schone_artiest = str_replace('&', ' ', $current_song['artist']);
 $zoekterm = urlencode($schone_artiest . " " . $current_song['title']);
-$api_url = "https://apple.com" . $zoekterm . "&limit=1&entity=song";
+//$api_url = "https://apple.com" . $zoekterm . "&limit=1&entity=song";
+$api_url = "https://itunes.apple.com/search?term=" . $zoekterm . "&limit=1&entity=song";
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $api_url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0');
+//curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0');
+curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)');
 curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 $response = curl_exec($ch);
 curl_close($ch);
@@ -44,7 +46,10 @@ curl_close($ch);
 $preview_url = "";
 if ($response) {
     $json = json_decode($response, true);
-    if (isset($json['results']['previewUrl'])) { $preview_url = $json['results']['previewUrl']; }
+    //if (isset($json['results']['previewUrl'])) { $preview_url = $json['results']['previewUrl']; }
+	if (isset($json['results'][0]['previewUrl'])) {
+        $preview_url = $json['results'][0]['previewUrl'];
+    }
 }
 if (empty($preview_url)) { die("Fout: Geen audio gevonden."); }
 ?>
