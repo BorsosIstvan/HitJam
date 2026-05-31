@@ -1,15 +1,24 @@
 <?php
 session_start();
 
-// Als de gebruiker nog niet is ingelogd, stuur hem direct naar de inlogpagina
-if (!isset($_SESSION['loggedin'])) {
-    header("Location: login.php");
+// 1. AFHANDELEN VAN UITLOGGEN
+// Dit moet bovenaan staan voordat er HTML of headers worden verstuurd!
+if (isset($_GET['logout'])) { 
+    session_destroy(); 
+    header("Location: login.php"); // Direct naar inlogpagina na uitloggen
     exit;
 }
 
+// 2. CONTROLEER OF GEBRUIKER IS INGELOGD
+$is_logged_in = isset($_SESSION['loggedin']);
 $is_admin = (isset($_SESSION['role']) && $_SESSION['role'] === 'admin');
-?>
 
+// Als de gebruiker NIET is ingelogd, stuur hem naar de login/registratiepagina
+if (!$is_logged_in) {
+    header("Location: login.php");
+    exit;
+}
+?>
 
 <!DOCTYPE html>
 <html lang="nl">
@@ -118,6 +127,7 @@ $is_admin = (isset($_SESSION['role']) && $_SESSION['role'] === 'admin');
             text-align: center;
             color: #b3b3b3;
             border: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 10px;
         }
 
         .user-name {
@@ -144,38 +154,25 @@ $is_admin = (isset($_SESSION['role']) && $_SESSION['role'] === 'admin');
             <div class="tagline">The Music Quiz Battle</div>
         </div>
 
-        <!-- Menu knoppen gebaseerd op status -->
+        <!-- Menu knoppen -->
         <div class="menu-section">
-            <?php if (!$is_logged_in): ?>
-                <!-- Dit is puur voor de test, hier komt straks je eigen login-koppeling -->
-                <p style="text-align:center; color:#aaa; font-size:14px;">Demo Inloggen als:</p>
-                <a href="index.php?login_as=speler1" class="btn btn-primary">📱 Inloggen als Speler</a>
-                <a href="index.php?login_as=admin" class="btn btn-admin">👑 Inloggen als Spelleider</a>
-            <?php else: ?>
-                
-                <div class="user-status">
-                    Ingelogd als: <span class="user-name"><?= htmlspecialchars($_SESSION['user']) ?></span>
-                </div>
+            <div class="user-status">
+                Ingelogd als: <span class="user-name"><?= htmlspecialchars($_SESSION['user']) ?></span>
+            </div>
 
-                <!-- Iedereen kan meespelen -->
-                <a href="speelveld.php" class="btn btn-primary">🎮 Start Quiz Battle</a>
-                
-                <!-- Iedereen kan zijn eigen QR-handkaart opvragen -->
-                <a href="kaart.php" class="btn btn-secondary">🃏 Mijn Handkaart</a>
+            <!-- Iedereen kan meespelen -->
+            <a href="speelveld.php" class="btn btn-primary">🎮 Start Quiz Battle</a>
+            
+            <!-- Iedereen kan zijn eigen QR-handkaart opvragen -->
+            <a href="kaart.php" class="btn btn-secondary">🃏 Mijn Handkaart</a>
 
-                <!-- Alleen de Admin/Spelleider ziet de dashboard/JBL-knop -->
-                <?php if ($is_admin): ?>
-                    <a href="leider_dashboard.php" class="btn btn-admin">👑 Spelleider Controle (JBL)</a>
-                <?php endif; ?>
-
-                <a href="?logout=1" class="btn btn-secondary" style="color: #ff2d55; margin-top: 20px; font-size: 14px; padding: 10px;">Uitloggen</a>
-                <?php 
-                if (isset($_GET['logout'])) { 
-                    session_destroy(); 
-                    header("Location: index.php"); 
-                } 
-                ?>
+            <!-- Alleen de Admin/Spelleider ziet de dashboard/JBL-knop -->
+            <?php if ($is_admin): ?>
+                <a href="leider_dashboard.php" class="btn btn-admin">👑 Spelleider Controle (JBL)</a>
             <?php endif; ?>
+
+            <!-- Uitlogknop stuurt nu een signaal naar de PHP bovenaan -->
+            <a href="index.php?logout=1" class="btn btn-secondary" style="color: #ff2d55; margin-top: 20px; font-size: 14px; padding: 10px;">Uitloggen</a>
         </div>
 
         <!-- Footer -->
