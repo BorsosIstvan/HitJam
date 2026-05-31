@@ -1,15 +1,15 @@
 <?php
 session_start();
 
-// Tijdelijke test-login voor de opzet (Gebruik je eigen login-systeem als je dat al hebt)
-if (isset($_GET['login_as'])) {
-    $_SESSION['loggedin'] = true;
-    $_SESSION['user'] = $_GET['login_as']; // 'admin' of 'speler1'
+// Als de gebruiker nog niet is ingelogd, stuur hem direct naar de inlogpagina
+if (!isset($_SESSION['loggedin'])) {
+    header("Location: login.php");
+    exit;
 }
 
-$is_logged_in = isset($_SESSION['loggedin']);
-$is_admin = (isset($_SESSION['user']) && $_SESSION['user'] === 'admin');
+$is_admin = (isset($_SESSION['role']) && $_SESSION['role'] === 'admin');
 ?>
+
 
 <!DOCTYPE html>
 <html lang="nl">
