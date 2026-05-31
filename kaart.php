@@ -8,7 +8,7 @@ if (!isset($_SESSION['loggedin'])) {
 
 // Koppel de databaseverbinding en de officiële QR-bibliotheek
 require_once('db.php');
-require_once('phpqrcode/qrlib.php');
+require_once('../MyApp/phpqrcode/qrlib.php');
 
 try {
     // Haal 1 willekeurig liedje op uit de SQLite database via RANDOM()
