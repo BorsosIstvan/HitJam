@@ -1,8 +1,8 @@
-const CACHE_NAME = 'php-app-cache-v4';
+const CACHE_NAME = 'php-app-cache-v5'; // Verhoogd naar v5
 const urlsToCache = [
-  '/',
-  '/index.php',
-  '/manifest.json'
+  '/HitJam/',
+  '/HitJam/index.php',
+  '/HitJam/manifest.json'
 ];
 
 // Installeer de service worker en sla basisbestanden op
