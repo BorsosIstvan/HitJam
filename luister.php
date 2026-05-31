@@ -29,9 +29,9 @@ try {
     if (!$current_song) { die("Liedje niet gevonden!"); }
 } catch (Exception $e) { die("Database fout: " . $e->getMessage()); }
 
-$schone_artiest = str_replace('&', ' ', $current_song['artist']);
-$zoekterm = urlencode($schone_artiest . " " . $current_song['title']);
-$api_url = "https://apple.com" . $zoekterm . "&limit=1&entity=song";
+// 3. Maak de juiste zoekterm voor Apple Music
+$zoekterm = urlencode($current_song['artist'] . " " . $current_song['title']);
+$api_url = "https://itunes.apple.com/search?term=" . $zoekterm . "&limit=1&entity=song";
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $api_url);
