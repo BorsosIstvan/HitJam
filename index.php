@@ -199,4 +199,32 @@ if (!$is_logged_in) {
     </div>
 
 </body>
+<!-- Een onzichtbare knop die alleen verschijnt als de app geïnstalleerd kán worden -->
+<button id="pwa-install-btn" style="display: none; width: 100%; padding: 15px; background: #28a745; color: white; border: none; font-size: 16px; font-weight: bold; text-align: center; cursor: pointer;">
+  📥 Installeer HitJam App
+</button>
+
+<script>
+  let deferredPrompt;
+  const installBtn = document.getElementById('pwa-install-btn');
+
+  // De browser vuurt dit event af als de PWA aan de eisen voldoet
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault(); // Voorkom de standaard pop-up
+    deferredPrompt = e; // Sla het event op
+    installBtn.style.display = 'block'; // Toon JOUW eigen installatieknop!
+
+    installBtn.addEventListener('click', () => {
+      installBtn.style.display = 'none'; // Verberg de knop weer
+      deferredPrompt.prompt(); // Toon het installatiescherm
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('Gebruiker heeft de app geïnstalleerd');
+        }
+        deferredPrompt = null;
+      });
+    });
+  });
+</script>
+
 </html>
