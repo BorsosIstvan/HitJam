@@ -25,8 +25,12 @@ try {
 }
 
 // 3. Maak de juiste zoekterm voor Apple Music
-$zoekterm = urlencode($current_song['artist'] . " " . $current_song['title']);
+// 🔥 CRUCIALE FIX: Vervang '&' door een spatie zodat Apple's zoekmachine niet crasht!
+$schone_artiest = str_replace('&', ' ', $current_song['artist']);
+
+$zoekterm = urlencode($schone_artiest . " " . $current_song['title']);
 $api_url = "https://apple.com" . $zoekterm . "&limit=1&entity=song";
+
 
 // 4. Start de stabiele cURL-verbinding naar Apple Music
 $ch = curl_init();
