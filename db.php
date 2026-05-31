@@ -1,7 +1,7 @@
 <?php
 try {
     // Koppel met de database in de beveiligde map HitData
-    $db_path = '/var/www/HitData/hitjam.db';
+    $db_path = '/var/www/html/HitData/hitjam.db';
     $db = new PDO('sqlite:' . $db_path);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
