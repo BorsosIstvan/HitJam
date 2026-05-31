@@ -26,6 +26,22 @@ if (!$is_logged_in) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>HitJam - The Music Quiz Battle</title>
+	<!-- Link naar het manifest -->
+	<link rel="manifest" href="manifest.json">
+
+	<!-- Meta tag voor mobiele weergave (verplicht voor PWA) -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="#007bff">
+
+	<script>
+	  // Registreer de Service Worker (Stap 3)
+	  if ('serviceWorker' in navigator) {
+		navigator.serviceWorker.register('/sw.js')
+		  .then(() => console.log("Service Worker Geregistreerd"))
+		  .catch(err => console.log("Service Worker Mislukt", err));
+	  }
+	</script>
+
     <style>
         body {
             font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;

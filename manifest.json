@@ -1,22 +1,21 @@
 {
   "short_name": "HitJamApp",
-  "name": "Hit Jam",
-  "start_url": "index.php",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#000000",
+  "name": "Hit and Jam App",
   "icons": [
     {
-      "src": "icon.png",
-      "sizes": "192x192",
+      "src": "icon-192.png",
       "type": "image/png",
-      "purpose": "any maskable"
+      "sizes": "192x192"
     },
     {
       "src": "icon-512.png",
-      "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "sizes": "512x512"
     }
-  ]
+  ],
+  "start_url": "/index.php",
+  "background_color": "#ffffff",
+  "theme_color": "#007bff",
+  "display": "standalone",
+  "orientation": "portrait"
 }
