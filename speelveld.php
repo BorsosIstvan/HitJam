@@ -25,40 +25,63 @@ if (!isset($_SESSION['loggedin'])) { header("Location: login.php"); exit; }
         .btn-choice { padding: 25px 10px; border-radius: 20px; font-size: 24px; font-weight: 900; border: 2px solid #33343f; background: #1f2026; color: white; cursor: pointer; transition: all 0.1s; }
         .btn-choice:active { transform: scale(0.95); }
         
-        /* Resultaten feedback */
-        .feedback-screen { display: none; margin: auto; font-size: 20px; font-weight: bold; }
+        /* Nieuw Resultaten/Uitslag Scherm */
+        .feedback-screen { display: none; margin: auto; width: 100%; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        .btn-back { padding: 16px; border-radius: 16px; font-size: 16px; font-weight: 700; text-decoration: none; text-align: center; background: #1f2026; color: #ffffff; border: 1px solid #33343f; display: block; }
+        .result-badge { font-size: 28px; font-weight: 900; margin-bottom: 20px; text-transform: uppercase; }
+        .result-correct { color: #00ffcc; }
+        .result-wrong { color: #ff2d55; }
+        
+        .song-info-card { background: rgba(255, 255, 255, 0.04); padding: 20px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 25px; }
+        .info-year { font-size: 48px; font-weight: 900; color: #ff9500; margin-bottom: 5px; }
+        .info-title { font-size: 20px; font-weight: 800; margin-bottom: 5px; }
+        .info-artist { color: #b3b3b3; font-size: 15px; }
+        
+        .next-round-info { background: rgba(0, 123, 255, 0.1); border: 1px solid #007bff; padding: 12px; border-radius: 12px; font-size: 13px; color: #00ffcc; margin-top: 15px; }
+        
+        .btn-back { padding: 16px; border-radius: 16px; font-size: 16px; font-weight: 700; text-decoration: none; text-align: center; background: #1f2026; color: #ffffff; border: 1px solid #33343f; display: block; margin-top: 20px; }
     </style>
 </head>
 <body>
 
     <div class="app-container">
         
-        <!-- SCHERM 1: WACHTEN -->
+        <!-- SCHERM 1: WACHTEN OP START -->
         <div class="waiting-box" id="waitingScreen">
             <div class="pulse-circle"></div>
             <h3 style="color:#ff9500; text-transform:uppercase; letter-spacing:1px;">Luister goed...</h3>
-            <p style="color:#aaa; font-size:14px;">Zodra de muziek start op de JBL-box, verschijnen de jaartallen hier op je scherm!</p>
+            <p style="color:#aaa; font-size:14px;">Zodra de spelleider de muziek start, verschijnen de jaartallen hier!</p>
         </div>
 
-        <!-- SCHERM 2: QUIZ INTERFACE -->
+        <!-- SCHERM 2: QUIZ MEERKEUZE -->
         <div class="quiz-box" id="quizScreen">
             <h2 style="font-size:26px; font-weight:900; color:#ff2d55; text-transform:uppercase; margin:0;">Kies het juiste jaar!</h2>
             <p style="color:#aaa; font-size:14px; margin-top:5px;">Druk bliksemsnel voor bonuspunten!</p>
             
             <div class="choices-grid" id="choicesGrid">
-                <!-- Knoppen worden live ingeladen door JavaScript -->
+                <!-- Knoppen worden live geladen -->
             </div>
         </div>
 
-        <!-- SCHERM 3: FEEDBACK (NA HET DRUKKEN) -->
+        <!-- SCHERM 3: LIVE UITSLAG VAN HET LIEDJE -->
         <div class="feedback-screen" id="feedbackScreen">
-            <div id="feedbackText" style="font-size: 28px; margin-bottom: 15px;"></div>
-            <p style="color:#aaa; font-size:14px;">Kijk op het scherm van de spelleider voor de tussenstand.</p>
+            <div id="resultStatus" class="result-badge"></div>
+            
+            <!-- De kaart die alle liedjesgegevens laat zien na het drukken -->
+            <div class="song-info-card">
+                <div class="info-year" id="infoYear">1990</div>
+                <div class="info-title" id="infoTitle">Liedje Titel</div>
+                <div class="info-artist" id="infoArtist">Artiest Naam</div>
+            </div>
+            
+            <div class="next-round-info">
+                ⏳ Wacht tot de spelleider de volgende ronde start. Jouw scherm springt dan automatisch weer op scherp!
+            </div>
         </div>
 
-        <a href="index.php" class="btn-back" id="backBtn">⬅️ Hoofdmenu</a>
+        <!-- Terugknop: Altijd zichtbaar onderaan het scherm -->
+        <a href="index.php" class="btn-back" id="backBtn">⬅️ Verlaat Spel / Menu</a>
 
     </div>
 
@@ -66,50 +89,65 @@ if (!isset($_SESSION['loggedin'])) { header("Location: login.php"); exit; }
         let momenteelRondeId = 0;
         let alGeantwoord = false;
 
-        // Dit script vraagt elke seconde aan de Pi of er een ronde start
+        // Vraag elke seconde aan de Pi naar de status
         setInterval(function() {
-            if (alGeantwoord) return; // Als de speler al gedrukt heeft, hoeven we niks te doen
-
             fetch('check_status.php')
                 .then(response => response.json())
                 .then(data => {
+                    // Als er een NIEUWE ronde actief is en de muziek is gestart
                     if (data.round_active == 1 && data.music_started == 1 && data.current_song_id !== momenteelRondeId) {
-                        // 🚀 RONDE START! Wissel van scherm
                         momenteelRondeId = data.current_song_id;
+                        alGeantwoord = false; // Reset antwoord-vlag voor de nieuwe ronde
+                        
+                        // Schakel schermen
                         document.getElementById('waitingScreen').style.display = 'none';
-                        document.getElementById('backBtn').style.display = 'none';
+                        document.getElementById('feedbackScreen').style.display = 'none';
                         document.getElementById('quizScreen').style.display = 'flex';
                         
-                        // Bouw de 4 jaarknoppen op het scherm
+                        // Bouw de 4 jaarknoppen
                         let gridHTML = '';
                         data.options.forEach(jaar => {
                             gridHTML += `<button class="btn-choice" onclick="stuurAntwoord(${jaar})">${jaar}</button>`;
                         });
                         document.getElementById('choicesGrid').innerHTML = gridHTML;
-                    } else if (data.round_active == 0 && momenteelRondeId !== 0) {
-                        // De admin heeft de ronde gereset, zet speler weer in de wachtstand
+                    } 
+                    // Als de admin de ronde heeft afgesloten (round_active wordt 0) en de speler staat nog in het uitslagscherm
+                    else if (data.round_active == 0 && momenteelRondeId !== 0) {
                         resetNaarWachtstand();
                     }
                 });
         }, 1000);
 
         function stuurAntwoord(gekozenJaar) {
+            if (alGeantwoord) return;
             alGeantwoord = true;
+            
             document.getElementById('quizScreen').style.display = 'none';
             document.getElementById('feedbackScreen').style.display = 'block';
-            document.getElementById('feedbackText').innerHTML = "⏳ Verwerken...";
+            
+            document.getElementById('resultStatus').className = "result-badge";
+            document.getElementById('resultStatus').innerHTML = "⏳ Controleren...";
 
-            // Stuur het jaartal naar de server via een POST aanvraag
             let formData = new FormData();
             formData.append('jaar', gekozenJaar);
 
+            // Stuur antwoord naar de Pi en vang de complete liedjesgegevens op
             fetch('verwerk_antwoord.php', { method: 'POST', body: formData })
                 .then(response => response.json())
                 .then(res => {
+                    // Vul de liedjeskaart live in met de gegevens van de Pi
+                    document.getElementById('infoYear').innerHTML = res.correct_year;
+                    document.getElementById('infoTitle').innerHTML = res.title;
+                    document.getElementById('infoArtist').innerHTML = res.artist;
+                    
+                    // Toon of het goed of fout was
+                    let statusDiv = document.getElementById('resultStatus');
                     if (res.status === 'correct') {
-                        document.getElementById('feedbackText').innerHTML = `🎉 GOED!<br><span style='color:#00ffcc; font-size:22px;'>+${res.points} Punten!</span>`;
+                        statusDiv.classList.add('result-correct');
+                        statusDiv.innerHTML = `🎉 GOED!<br><span style='font-size:18px; color:#ffffff;'>+${res.points} Punten</span>`;
                     } else {
-                        document.getElementById('feedbackText').innerHTML = `❌ FOUT!<br><span style='color:#ff2d55; font-size:20px;'>Het was ${res.correct_year}</span>`;
+                        statusDiv.classList.add('result-wrong');
+                        statusDiv.innerHTML = "❌ FOUT!";
                     }
                 });
         }
@@ -120,7 +158,6 @@ if (!isset($_SESSION['loggedin'])) { header("Location: login.php"); exit; }
             document.getElementById('feedbackScreen').style.display = 'none';
             document.getElementById('quizScreen').style.display = 'none';
             document.getElementById('waitingScreen').style.display = 'flex';
-            document.getElementById('backBtn').style.display = 'block';
         }
     </script>
 
