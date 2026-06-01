@@ -1,6 +1,3 @@
-"# HitJam" 
-Hier is een compleet, professioneel overzicht van jouw applicatie HitJam. Je kunt de onderstaande tekst kopiëren en opslaan als een .txt of .md (Markdown) bestand op je computer.
-Dit document bevat alle bouwstenen, database-structuren, API's en logica, zodat een andere AI (of jijzelf) de app in de toekomst in één keer begrijpt en direct verder kan ontwikkelen.
 ------------------------------
 ## 🎵 HitJam - Project Architectuur & Documentatie
 HitJam is een interactieve, multiplayer muziekquiz-game die draait op een lokale Apache webserver (Raspberry Pi) met een SQLite database. Het spel combineert het scannen van fysieke/digitale QR-codes met een bliksemsnelle realtime quiz-battle op mobiele telefoons, waarbij muziek via een JBL-box (of andere speaker) wordt afgespeeld.
@@ -94,7 +91,5 @@ Als je dit bestand later aan een AI geeft, kun je die AI vragen om:
 * Een Live chat of emoji-reactiesysteem toe te voegen zodat spelers elkaar kunnen plagen tijdens het wachten.
 * Een Timer-balk (Visual Countdown) op het scherm van de speler te tekenen die aftelt van 10 naar 0 seconden.
 * De app om te bouwen tot een volledige Progressive Web App (PWA) met een vernieuwde manifest.json zodat hij als een échte app op Android/iOS start.
-
-Veel plezier met de verdere ontwikkeling van HitJam! Heb je voor nu nog vragen over deze structuur of wil je nog iets toevoegen?
 
 
