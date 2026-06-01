@@ -122,7 +122,8 @@ $ranglijst = $db->query("SELECT username, points FROM scores ORDER BY points DES
                 
                 <button type="submit" name="reset_scores" class="btn btn-secondary" style="color: #ff2d55; font-size: 14px; padding: 10px;" onclick="return confirm('Weet je zeker dat je alle scores wilt wissen?')">🔄 Reset Scorebord</button>
             </form>
-            
+            <!-- Sla dit op in de knoppen-lijst van leider_dashboard.php -->
+			<a href="voeg_liedje_toe.php" class="btn btn-secondary" style="color: #00ffcc; border-color: #00ffcc;">➕ Nieuw Liedje Toevoegen</a>
             <a href="index.php" class="btn btn-secondary" style="margin-top: 10px;">⬅️ Hoofdmenu</a>
         </div>
     </div>
